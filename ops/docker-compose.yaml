@@ -1,0 +1,26 @@
+version: "3.3"
+services:
+  influx:
+    image: influxdb
+    volumes:
+    - /var/lib/influxdb:/var/lib/influxdb
+  telegraf:
+    image: telegraf
+    volumes:
+    - ./telegraf.conf:/etc/telegraf/telegraf.conf
+    depends_on:
+    - influx
+    - mosquitto
+  mosquitto:
+    image: eclipse-mosquitto
+    volumes:
+    - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+    ports:
+    - "1883:1883"
+  grafana:
+    image: grafana/grafana
+    ports:
+    - "3000:3000"
+    depends_on:
+    - telegraf
+  
